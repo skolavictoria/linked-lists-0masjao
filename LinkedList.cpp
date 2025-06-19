@@ -1,8 +1,11 @@
 #include "LinkedList.hpp"
 #include <iostream>
+#include <algorithm>
+#include <ctime>
+#include <cstdlib>
 using namespace std;
 
-//Node
+
 Node::Node(int val) : value(val), next_member(nullptr) {}
 
 void Node::add_next_member(Node* ptr) {
@@ -29,7 +32,7 @@ void LinkedList::push(int value) {
 
 }
 
-//LinkedList
+
 void LinkedList::append(int value) {
     Node* new_node = new Node(value);
     if (!head) {
@@ -44,7 +47,10 @@ void LinkedList::append(int value) {
 
 void LinkedList::insert(int position, int value) {
     if (position < 0) return;
-    if (position == 0) return push(value);
+    if (position == 0) {
+        push(value);
+        return;
+    }
 
     Node* temp = head;
     for (int i = 0; i < position - 1 && temp; ++i)
@@ -148,6 +154,44 @@ void LinkedList::sortLinkedList() {
             current = next;
         }
     } while (swapped);
+}
+
+Node* LinkedList::get_elem_by_index(int index) {
+    if (index < 0) return nullptr;
+    Node* temp = head;
+    for (int i = 0; temp && i < index; ++i) {
+        temp = temp->get_next_member();
+    }
+    return temp;
+}
+
+bool LinkedList::search(int value) {
+    Node* temp = head;
+    while (temp) {
+        if (temp->get_value() == value)
+            return true;
+        temp = temp->get_next_member();
+    }
+    return false;
+}
+
+void LinkedList::shuffle() {
+    vector<int> values;
+    Node* temp = head;
+    while (temp) {
+        values.push_back(temp->get_value());
+        temp = temp->get_next_member();
+    }
+
+    srand(time(0));
+    random_shuffle(values.begin(), values.end());
+
+    temp = head;
+    int i = 0;
+    while (temp) {
+        temp->value = values[i++];
+        temp = temp->get_next_member();
+    }
 }
 
 void LinkedList::display() {
